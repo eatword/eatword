@@ -1,5 +1,5 @@
 
-import firebase from 'firebase/firestore'
+import firebase from 'firebase/app'
 import 'firebase/firestore'
 
 
@@ -17,5 +17,6 @@ firebase.initializeApp(firebaseConfig);
 
 const db = firebase.firestore();
 
-module.exports = db
+
+export default db
 
