@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Lobby from './views/Lobby.vue'
 import Waiting from './views/Waiting.vue'
+import GamePage from './views/GamePage.vue'
 
 Vue.use(Router)
 
@@ -24,6 +25,11 @@ export default new Router({
       path: "/waiting/:id",
       name: "waiting",
       component: Waiting,
+    },
+    {
+      path: '/game',
+      name: 'game',
+      component: GamePage
     }
   ]
 })
