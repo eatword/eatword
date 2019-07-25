@@ -1,10 +1,8 @@
 <template>
-<<<<<<< HEAD
   <div id="app">
-    
-=======
-  
->>>>>>> addLobby
+    <div id="nav">
+      
+    </div>
     <router-view/>
 </template>
 
