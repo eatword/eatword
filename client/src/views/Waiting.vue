@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import db from '../apis/firebase.js'
+
 export default {
     data(){
         return {

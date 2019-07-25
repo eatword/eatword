@@ -1,11 +1,9 @@
 <template>
-<<<<<<< HEAD
   <div id="app">
     
-=======
   
->>>>>>> addLobby
     <router-view/>
+  </div>
 </template>
 
 <style>
