@@ -26,6 +26,7 @@ export default new Vuex.Store({
             players: [{ name: localStorage.username, score: 0 }],
             winner: '',
             createdAt: new Date(),
+            isReady: false
           })
           .then((docs) => {
             console.log(docs)
