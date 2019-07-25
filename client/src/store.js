@@ -48,7 +48,7 @@ export default new Vuex.Store({
           docs.forEach(el => {
             let info = el.data()
             info.id = el.id
-            droomsta.push(info)
+            rooms.push(info)
           });
           context.commit('setRooms', rooms)
         }, (error) => {
