@@ -8,12 +8,12 @@
                 </div>
             </div>
             <button v-if="roomMaster == user" type="button" class="btn btn-warning" @click="start">Start!</button>
+            <button type="button" class="btn btn-warning" @click="leaveRoom"> Leave Room </button>
         </div>
     </div>
 </template>
 
 <script>
-<<<<<<< HEAD
 import db from '../apis/firebase.js'
 import { functions } from 'firebase';
 
@@ -38,17 +38,21 @@ export default {
                     console.log('error start game')
                     console.error(error);
                 });
+        },
+        leaveRoom() {
+            this.$store.dispatch('leaveRoom',this.$route.params.id)
         }
+        
     }, 
     created(){
-
         db.collection("rooms")
         .doc(this.$route.params.id)
         .onSnapshot(
              (doc) => {
+                 console.log(this.$route.params.id)
                 this.currentRoom = doc.data()
                 this.roomMaster= doc.data().players[0].name
-                console.log(this.currentRoom, '=====')
+                console.log(this.currentRoom, 'ini currentRoommmmmm')
                 console.log(this.roomMaster, 'roomMaster')
                 if(this.currentRoom.isReady === true){
                     console.log('masuk ke gamennya')
@@ -60,49 +64,8 @@ export default {
                 console.log('error masuk ke game');
                 console.log(error)
             });
-=======
-import db from '@/apis/firebase.js'
-export default {
-  data () {
-    return {
-      currentRoom: {},
-      user: localStorage.username
->>>>>>> fixedLobby
     }
-  },
-  methods: {
-    start () {
-      db.collection('rooms')
-        .doc(this.$route.params.id).update({
-          isReady: true
-        })
-        .then(() => {
-          console.log('start playing')
-        })
-        .catch((error) => {
-          console.log('error start game')
-          console.error(error)
-        })
-    }
-  },
-  created () {
-    db.collection('rooms')
-      .doc(this.$route.params.id)
-      .onSnapshot(
-        (doc) => {
-          this.currentRoom = doc.data()
-          if (this.currentRoom.isReady == true) {
-            console.log('masuk ke gamennya')
-            this.$router.push(`/game/${this.$route.params.id}`)
-          }
-        },
-        (error) => {
-          console.log('error masuk ke game')
-          console.log(error)
-        })
   }
-
-}
 </script>
 
 <style>

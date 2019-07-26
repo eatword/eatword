@@ -37,7 +37,7 @@
         </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal"></button>
-            <button type="button" class="btn btn-primary" @click="createRoom">Submit</button>
+            <button type="button" class="btn btn-primary"  data-dismiss="modal" @click="createRoom">Submit</button>
           </div>
         </div>
       </div>
@@ -85,9 +85,9 @@ export default {
   methods: {
     createRoom () {
       // console.log('asd')
+      $('#exampleModalCenter').modal('hide')
       this.$store.dispatch('createRoom', this.roomName)
       localStorage.setItem('room', this.roomName)
-      $('#exampleModalCenter').modal('toggle')
     },
     joinRoom (id) {
       this.$store.dispatch('joinRoom', id)
