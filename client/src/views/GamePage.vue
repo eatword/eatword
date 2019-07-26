@@ -1,5 +1,6 @@
 <template>
     <div class="gamepage">
+        {{roomData.players[0].score}}
         <div id="imagegame">
             <br>
             <!-- src="../assets/piring/1.png" -->
@@ -151,6 +152,7 @@ export default {
         }
     },
     created(){
+        this.generateIndex()
         this.setImage()
     },
     components:{
@@ -257,23 +259,18 @@ export default {
                 .catch(function(error) {
                   console.log("Error getting document:", error);
                 });
-                this.answer = ''
-                if(this.player.score >= 10){
-                    this.question= 'win !!!'
-                }
-                else{
+
+                    this.generateIndex()
                     this.setImage()
                     this.answer = ''
                     this.index = ''
-                    this.generateIndex()
-                }
-                console.log('yeay sama')
+
             }else{
                 console.log('ngga sama')
+                this.question='Your answer is wrong!'
+                this.generateIndex()
                 this.setImage()
                 this.index  = ''
-                this.generateIndex()
-                this.question='Your answer is wrong!'
                 this.userpoint -= 2
                 db.collection('rooms')
                   .doc(this.$route.params.id).get()
@@ -334,11 +331,11 @@ export default {
         doc => {
           this.roomData = doc.data()
           let playerList = doc.data().players
-          console.log(playerList)
+          console.log(this.roomData)
           playerList.forEach((element) => {
-              if(element.score >= 100){
+              if(element.score >= 10){
                 let pemenang = element.name
-                this.$swal(`Game is Over, the winner is ${pemenang}`);
+                Swal(`Game is Over, the winner is ${pemenang}`);
                 localStorage.clear()
                 this.$router.push('/')
               }

@@ -7,19 +7,21 @@
                     {{player.name}} is ready
                 </div>
             </div>
-            <button v-if="currentRoom.players[0].name == user" type="button" class="btn btn-warning" @click="start">Start!</button>
+            <button v-if="roomMaster == user" type="button" class="btn btn-warning" @click="start">Start!</button>
         </div>
     </div>
 </template>
 
 <script>
 import db from '../apis/firebase.js'
+import { functions } from 'firebase';
 
 export default {
     data(){
         return {
             currentRoom: {},
-            user: localStorage.username
+            user: localStorage.username,
+            roomMaster:''
         }
     },
     methods:{
@@ -38,13 +40,18 @@ export default {
         }
     }, 
     created(){
+
         db.collection("rooms")
         .doc(this.$route.params.id)
         .onSnapshot(
-            (doc) => {
+             (doc) => {
                 this.currentRoom = doc.data()
-                if(this.currentRoom.isReady == true){
+                this.roomMaster= doc.data().players[0].name
+                console.log(this.currentRoom, '=====')
+                console.log(this.roomMaster, 'roomMaster')
+                if(this.currentRoom.isReady === true){
                     console.log('masuk ke gamennya')
+
                     this.$router.push(`/game/${this.$route.params.id}`)
                 }
             },
