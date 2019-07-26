@@ -13,32 +13,37 @@
                      <img :src="setImageHint" alt="FOODHINT" width="400" height="400" id="img_hint"><br>
                 </div>
             </div>
-            <button @click="generateIndex" type="button" class="btn btn-primary">SKIP</button>
-            <button @click="hint" type="button" class="btn btn-primary">hint</button>
-            <h2>{{question}} |  <b>{{answerWrong}}</b></h2>
-            <form @submit.prevent="userAnswer">
-                <div class="form-group">
-                    <input v-model="answer" type="text" class="form-control" id="answerPlayer" aria-describedby="answerPlayer" placeholder="Your Answer . . .">
+            <div class="container answerScore" style="margin-right: 10%;">
+                <div class="row">
+                    <div class="col-sm-6 offset-2">
+                        <button @click="generateIndex" type="button" class="btn btn-primary">SKIP</button>
+                        <h2>{{question}} |  <b>{{answerWrong}}</b></h2><br>
+                        <form @submit.prevent="userAnswer">
+                            <div class="form-group">
+                                <input v-model="answer" type="text" class="form-control" id="answerPlayer" style="width: 500px;" aria-describedby="answerPlayer" placeholder="Your Answer . . .">
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </form>
-            <div class="row" style="text-align:center;font-size: 80px; color: white;">
-                <div class="col">
-                    <h5>{{roomData.players[0].name}}</h5>
-                    <p>{{roomData.players[0].score}}</p>
-                </div>
-                <div class="col">
-                    <h5>{{roomData.players[1].name}}</h5>
-                    <p>{{roomData.players[1].score}}</p>
-                </div>
-                <div class="col">
-                    <h5>{{roomData.players[2].name}}</h5>
-                    <p>{{roomData.players[2].score}}</p>
-                </div>
-                <div class="col">
-                    <p></p>
-                </div>
-                <div class="col">
-                    <p></p>
+                <div class="row" style="text-align:center;font-size: 80px; color: white;">
+                    <div class="col">
+                        <h5>{{roomData.players[0].name}}</h5>
+                        <p>{{roomData.players[0].score}}</p>
+                    </div>
+                    <div class="col">
+                        <h5>{{roomData.players[1].name}}</h5>
+                        <p>{{roomData.players[1].score}}</p>
+                    </div>
+                    <div class="col">
+                        <h5>{{roomData.players[2].name}}</h5>
+                        <p>{{roomData.players[2].score}}</p>
+                    </div>
+                    <div class="col">
+                        <p></p>
+                    </div>
+                    <div class="col">
+                        <p></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -132,7 +137,7 @@ export default {
                     'indomie goreng',
                     'sop ayam',
                     'abon sapi',
-                    'aku sayang kamu'],
+                    'fried chicken'],
             setImagePoint: '',
             imageHint:[
                 gulai, 
@@ -384,9 +389,32 @@ export default {
           playerList.forEach((element) => {
               if(element.score >= 10){
                 let pemenang = element.name
-                Swal.fire('Game Over !!', `The Winner is ${pemenang}`);
-                localStorage.clear()
-                this.$router.push('/')
+                //  return (function() {     // function expression closure to contain variables
+                //     var i = 0;
+                //     var img = [ imgwinner,imgwinner1,imgwinner2,imgwinner3 ];
+                //     var el = document.getElementById('img_to_flip');  // el doesn't change
+                //     function toggle() {
+                //         el.src = [i];           // set the image
+                //         i = (i + 1) % img.length;  // update the counter
+                //     }
+                //     setInterval(toggle, 250);
+                // })();  
+                Swal.fire({
+                        title: 'Game Over !!',
+                        text: `The Winner is ${pemenang}`,
+                        type: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'OK !'
+                        }).then((result) => {
+                            if (result.value) {
+                                localStorage.clear()
+                                this.$router.push('/')
+                            }
+                        })
+                // localStorage.clear()
+                // this.$router.push('/')
               }
           })
         },
@@ -410,5 +438,11 @@ export default {
     }
     h2, h4{
         color: aliceblue;
+    }
+
+    .answerScore {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 </style>
