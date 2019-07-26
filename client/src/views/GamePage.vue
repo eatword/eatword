@@ -13,22 +13,25 @@
                      <img :src="setImageHint" alt="FOODHINT" width="400" height="400" id="img_hint"><br>
                 </div>
             </div>
-            <button @click="generateIndex" type="button" class="btn btn-primary">start</button>
+            <button @click="generateIndex" type="button" class="btn btn-primary">SKIP</button>
             <button @click="hint" type="button" class="btn btn-primary">hint</button>
-            <h2>{{question}} </h2>
+            <h2>{{question}} |  <b>{{answerWrong}}</b></h2>
             <form @submit.prevent="userAnswer">
                 <div class="form-group">
                     <input v-model="answer" type="text" class="form-control" id="answerPlayer" aria-describedby="answerPlayer" placeholder="Your Answer . . .">
                 </div>
             </form>
-            <div class="row" style="text-align:center;font-size: 80px; font-family: 'Orbitron', sans-serif; color: red">
+            <div class="row" style="text-align:center;font-size: 80px; color: white;">
                 <div class="col">
+                    <h5>{{roomData.players[0].name}}</h5>
                     <p>{{roomData.players[0].score}}</p>
                 </div>
                 <div class="col">
+                    <h5>{{roomData.players[1].name}}</h5>
                     <p>{{roomData.players[1].score}}</p>
                 </div>
                 <div class="col">
+                    <h5>{{roomData.players[2].name}}</h5>
                     <p>{{roomData.players[2].score}}</p>
                 </div>
                 <div class="col">
@@ -87,13 +90,31 @@ export default {
     data(){
         return {
             roomData: {},
-            page: '',
+            page: 'hint',
             question: '',
+            answerWrong:'',
             questionOut: '',
             answer: '',
             index: 0,
             savequestion: '',
             userpoint: 0,
+            userWiner: '',
+            image: [
+                img1,
+                img2,
+                img3,
+                img4,
+                img5,
+                img6,
+                img7,
+                img8,
+                img9,
+                img10,
+                imgwinner,
+                imgwinner1,
+                imgwinner2,
+                imgwinner3
+            ],
             questions: [
                     'gulai',
                     'bakso',
@@ -112,22 +133,6 @@ export default {
                     'sop ayam',
                     'abon sapi',
                     'aku sayang kamu'],
-            image: [
-                img1,
-                img2,
-                img3,
-                img4,
-                img5,
-                img6,
-                img7,
-                img8,
-                img9,
-                img10,
-                imgwinner,
-                imgwinner1,
-                imgwinner2,
-                imgwinner3
-            ],
             setImagePoint: '',
             imageHint:[
                 gulai, 
@@ -146,7 +151,7 @@ export default {
                 indomiegoreng, 
                 sopayam, 
                 abonsapi, 
-                'ILOVEYOU'
+                ''
             ],
             setImageHint: ''
         }
@@ -174,48 +179,46 @@ export default {
     },
     methods:{
         generateIndex(){
-            this.page = ''
-            if(this.userpoint < 10){
-                let random = Math.floor(Math.random()*15) 
+            this.answerWrong = ''
+            if(this.userpoint <= 10){
+                let random = Math.floor(Math.random()*this.questions.length) 
                 this.savequestion = this.questions[random]
                 this.index = random
+                this.hint(random)
+                // this.setImageHint = this.imageHint[random]
                 console.log(this.savequestion)
                 this.question = this.questionRandom(this.questions[random])
                 this.questionOut = this.question
-            }else{
-                this.question = 'Game Over'
+            }
+            else{
+                // get the winner
+                this.page = ''
+                this.roomData.forEach(el => {
+                    console.log(el, 'generate index')
+                })
+                this.question = `Game Over the winner is ${this.userWiner}`
                 return (function() {     // function expression closure to contain variables
                     var i = 0;
-                    var pics = [ imgwinner,imgwinner1,imgwinner2,imgwinner3 ];
+                    var  img= [ imgwinner,imgwinner1,imgwinner2,imgwinner3 ];
                     var el = document.getElementById('img_to_flip');  // el doesn't change
                     function toggle() {
-                        el.src = pics[i];           // set the image
-                        i = (i + 1) % pics.length;  // update the counter
+                        el.src = [i];           // set the image
+                        i = (i + 1) % img.length;  // update the counter
                     }
-                    setInterval(toggle, 500);
+                    setInterval(toggle, 250);
                 })();             // invoke the function expression
             }
         },
-        hint(){
-            this.page = 'hint'
-            console.log('masuk hint', this.savequestion.split(' ').join(''))
-            let hintWord = this.savequestion.split(' ').join('')
-            const indexes = this.imageHint[this.index]
-            if(indexes == '' || indexes == 'ILOVEYOU'){
-                return (function() {     // function expression closure to contain variables
-                    var i = 0;
-                    var pics = [ one, two, three, four ];
-                    var el = document.getElementById('img_hint');  // el doesn't change
-                    function toggle() {
-                        el.src = pics[i];           // set the image
-                        i = (i + 1) % pics.length;  // update the counter
-                    }
-                    setInterval(toggle, 500);
-                })(); 
-                // this.page = ''
+        hint(index){
+            const indexes = this.imageHint[index]
+            if(indexes == ''){
+                this.setImageHint = this.imageHint[index]
+                this.answerWrong = 'Maaf dipikir sendiri yaaaaa '
+                this.index = ''
             }else{
-                this.setImageHint = this.imageHint[this.index]
-                // this.page = ''
+                this.answerWrong = ''
+                this.setImageHint = this.imageHint[index]
+                this.index = ''
             }
             
         },
@@ -231,8 +234,12 @@ export default {
             return randomWord
         },
         userAnswer(){
-            this.page = ''
+            this.index = ''
             if(this.answer === this.savequestion){
+                this.generateIndex()
+                this.setImage()
+                this.answer = ''
+                this.index = ''
                 db.collection('rooms')
                   .doc(this.$route.params.id).get()
                   .then((doc) => {
@@ -246,9 +253,9 @@ export default {
                                     element.score += 1
                                 }
                                 data.push(element)
-                                });
+                            });
                             this.$store.dispatch('updateData',{
-                                id:this.$route.params.id,
+                                id: this.$route.params.id,
                                 data
                             })
                         } 
@@ -260,17 +267,11 @@ export default {
                   console.log("Error getting document:", error);
                 });
 
-                    this.generateIndex()
-                    this.setImage()
-                    this.answer = ''
-                    this.index = ''
-
             }else{
                 console.log('ngga sama')
-                this.question='Your answer is wrong!'
+                this.answerWrong = 'Your answer is wrong!'
                 this.generateIndex()
                 this.setImage()
-                this.index  = ''
                 this.userpoint -= 2
                 db.collection('rooms')
                   .doc(this.$route.params.id).get()
@@ -294,7 +295,7 @@ export default {
         },
         setImage(){
             if(this.userpoint === 0 || this.userpoint < 1){
-                this.setImagePoint = this.image[0]
+                this.setImagePoint = this.image[1]
             }else if(this.userpoint === 1){
                 this.setImagePoint = this.image[1]
             }else if(this.userpoint === 2){
@@ -317,8 +318,54 @@ export default {
                 this.setImagePoint = this.image[10]
             }
         },
-        getPoint(){
-
+        theUserWinner(){
+            db.collection("rooms")
+            .doc(this.$route.params.id)
+            .onSnapshot(
+                doc => {
+                this.roomData = doc.data()
+                let playerList = doc.data().players
+                let theWinner = ''
+                console.log(this.roomData)
+                playerList.forEach((element) => {
+                    console.log(element.name, 'elname')
+                    if(element.score == 10){
+                        this.userWiner = element.name
+                        let pemenang = element.name
+                        theWinner = pemenang
+                        return (function() {     // function expression closure to contain variables
+                            var i = 0;
+                            var  img = [ imgwinner,imgwinner1,imgwinner2,imgwinner3 ];
+                            var el = document.getElementById('img_to_flip');  // el doesn't change
+                            function toggle() {
+                                el.src = [i];           // set the image
+                                i = (i + 1) % img.length;  // update the counter
+                            }
+                            setInterval(toggle, 250);
+                        })();  
+                        Swal.fire({
+                        title: 'Are you sure?',
+                        text: `Game is Over, the winner is ${theWinner}`,
+                        type: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'OK !'
+                        }).then((result) => {
+                        if (result.value) {
+                            localStorage.clear()
+                            this.$router.push('/')
+                        }
+                        })
+                        // Swal.fire(`Game is Over, the winner is ${theWinner}`);
+                        this.question = ` Game Over The winner is ${theWinner}`
+                    }
+                })
+                },
+                err => {
+                console.log(err);
+                }
+            );
         }
     },
     computed:{
@@ -329,23 +376,27 @@ export default {
       .doc(this.$route.params.id)
       .onSnapshot(
         doc => {
+            console.log('masuk mounted ---')
           this.roomData = doc.data()
+          console.log(this.roomData, ' ------ ')
           let playerList = doc.data().players
-          console.log(this.roomData)
+          console.log(playerList)
           playerList.forEach((element) => {
               if(element.score >= 10){
                 let pemenang = element.name
-                Swal(`Game is Over, the winner is ${pemenang}`);
+                Swal.fire('Game Over !!', `The Winner is ${pemenang}`);
                 localStorage.clear()
                 this.$router.push('/')
               }
           })
         },
         err => {
-          console.log(err);
+          console.log(err,'errrrorr dinis');
         }
       );
-  } 
+  }
+
+
 }
 </script>
 
