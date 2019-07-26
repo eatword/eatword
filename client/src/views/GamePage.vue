@@ -284,9 +284,9 @@ export default {
                         }
                         data.push(element)
                       }) 
-                      this.$store.dispatch('updateData',{
-                      id:this.$route.params.id,
-                      data
+                        this.$store.dispatch('updateData',{
+                        id:this.$route.params.id,
+                        data
                       })
                     }
                   })
