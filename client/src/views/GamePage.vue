@@ -39,6 +39,9 @@
                 </div>
             </div>
         </div>
+        <audio controls autoplay loop hidden>
+           <source src="https://storage.cloud.google.com/hacktiv-image/Lil%20Dicky%20-%20Earth%20(Lyrics).mp3" type="audio/mpeg">
+        </audio>
     </div>
 </template>
 
@@ -72,260 +75,272 @@ import abonsapi from '../assets/animasi/38.png'
 import nasipadang from '../assets/animasi/36.png'
 import pecel from '../assets/animasi/online.png'
 
-//no image
+// no image
 import one from '../assets/noimage/21.png'
 import two from '../assets/noimage/22.png'
 import three from '../assets/noimage/23.png'
 import four from '../assets/noimage/24.png'
 
-//db
-import db from '../apis/firebase.js';
-import { mapState, mapMutations, mapActions } from 'vuex';
-
+// db
+import db from '../apis/firebase.js'
+import { mapState, mapMutations, mapActions } from 'vuex'
 
 export default {
-    data(){
-        return {
-            roomData: {},
-            page: '',
-            question: '',
-            questionOut: '',
-            answer: '',
-            index: 0,
-            savequestion: '',
-            userpoint: 0,
-            questions: [
-                    'gulai',
-                    'bakso',
-                    'papeda',
-                    'pecel',
-                    'perkedel',
-                    'kepiting',
-                    'chicken',
-                    'meatball',
-                    'noodle',
-                    'mozarella',
-                    'sop iga',
-                    'mie ayam',
-                    'nasi padang',
-                    'indomie goreng',
-                    'sop ayam',
-                    'abon sapi',
-                    'aku sayang kamu'],
-            image: [
-                img1,
-                img2,
-                img3,
-                img4,
-                img5,
-                img6,
-                img7,
-                img8,
-                img9,
-                img10,
-                imgwinner,
-                imgwinner1,
-                imgwinner2,
-                imgwinner3
-            ],
-            setImagePoint: '',
-            imageHint:[
-                gulai, 
-                meatball, 
-                papeda, 
-                pecel,
-                perkedel, 
-                kepiting, 
-                '',
-                meatball,
-                '',
-                mozarella, 
-                sopiga,
-                '', 
-                nasipadang,
-                indomiegoreng, 
-                sopayam, 
-                abonsapi, 
-                'ILOVEYOU'
-            ],
-            setImageHint: ''
-        }
+  data () {
+    return {
+      roomData: {},
+      page: '',
+      question: '',
+      questionOut: '',
+      answer: '',
+      index: 0,
+      savequestion: '',
+      userpoint: 0,
+      questions: [
+        'gulai',
+        'bakso',
+        'papeda',
+        'pecel',
+        'perkedel',
+        'kepiting',
+        'chicken',
+        'meatball',
+        'noodle',
+        'mozarella',
+        'sop iga',
+        'mie ayam',
+        'nasi padang',
+        'indomie goreng',
+        'sop ayam',
+        'abon sapi',
+        'aku sayang kamu'],
+      image: [
+        img1,
+        img2,
+        img3,
+        img4,
+        img5,
+        img6,
+        img7,
+        img8,
+        img9,
+        img10,
+        imgwinner,
+        imgwinner1,
+        imgwinner2,
+        imgwinner3
+      ],
+      setImagePoint: '',
+      imageHint: [
+        gulai,
+        meatball,
+        papeda,
+        pecel,
+        perkedel,
+        kepiting,
+        '',
+        meatball,
+        '',
+        mozarella,
+        sopiga,
+        '',
+        nasipadang,
+        indomiegoreng,
+        sopayam,
+        abonsapi,
+        'ILOVEYOU'
+      ],
+      setImageHint: ''
+    }
+  },
+  created () {
+    this.generateIndex()
+    this.setImage()
+  },
+  components: {
+    img1,
+    img2,
+    img3,
+    img4,
+    img5,
+    img6,
+    img7,
+    img8,
+    img9,
+    img10,
+    imgwinner,
+    imgwinner1,
+    imgwinner2,
+    imgwinner3,
+    gulai,
+    meatball,
+    papeda,
+    kepiting,
+    indomiegoreng,
+    mozarella,
+    perkedel,
+    sopiga,
+    sopayam,
+    abonsapi,
+    nasipadang,
+    pecel,
+    one,
+    two,
+    three,
+    four
+
+  },
+  methods: {
+    generateIndex () {
+      this.page = ''
+      if (this.userpoint < 10) {
+        let random = Math.floor(Math.random() * 15)
+        this.savequestion = this.questions[random]
+        this.index = random
+        console.log(this.savequestion)
+        this.question = this.questionRandom(this.questions[random])
+        this.questionOut = this.question
+      } else {
+        this.question = 'Game Over'
+        return (function () { // function expression closure to contain variables
+          var i = 0
+          var pics = [ imgwinner, imgwinner1, imgwinner2, imgwinner3 ]
+          var el = document.getElementById('img_to_flip') // el doesn't change
+          function toggle () {
+            el.src = pics[i] // set the image
+            i = (i + 1) % pics.length // update the counter
+          }
+          setInterval(toggle, 500)
+        })() // invoke the function expression
+      }
     },
-    created(){
+    hint () {
+      this.page = 'hint'
+      console.log('masuk hint', this.savequestion.split(' ').join(''))
+      let hintWord = this.savequestion.split(' ').join('')
+      const indexes = this.imageHint[this.index]
+      if (indexes == '' || indexes == 'ILOVEYOU') {
+        return (function () { // function expression closure to contain variables
+          var i = 0
+          var pics = [ one, two, three, four ]
+          var el = document.getElementById('img_hint') // el doesn't change
+          function toggle () {
+            el.src = pics[i] // set the image
+            i = (i + 1) % pics.length // update the counter
+          }
+          setInterval(toggle, 500)
+        })()
+        // this.page = ''
+      } else {
+        this.setImageHint = this.imageHint[this.index]
+        // this.page = ''
+      }
+    },
+    questionRandom (value) {
+      let word = value.split('')
+      let randomWord = ''
+      for (let i = 0; i < word.length; i++) {
+        let random = Math.floor(Math.random() * word.length)
+        randomWord += word[random]
+        word.splice(random, 1)
+        i -= 1
+      }
+      return randomWord
+    },
+    userAnswer () {
+      this.page = ''
+      if (this.answer === this.savequestion) {
+        db.collection('rooms')
+          .doc(this.$route.params.id).get()
+          .then((doc) => {
+            if (doc.exists) {
+              const data = []
+              this.userpoint++
+              let playerList = doc.data().players
+              playerList.forEach(element => {
+                if (element.name == localStorage.getItem('username')) {
+                  this.setImage()
+                  element.score += 1
+                }
+                data.push(element)
+              })
+              this.$store.dispatch('updateData', {
+                id: this.$route.params.id,
+                data
+              })
+            } else {
+              console.log('No such document!')
+            }
+          })
+          .catch(function (error) {
+            console.log('Error getting document:', error)
+          })
+
         this.generateIndex()
         this.setImage()
+        this.answer = ''
+        this.index = ''
+      } else {
+        console.log('ngga sama')
+        this.question = 'Your answer is wrong!'
+        this.generateIndex()
+        this.setImage()
+        this.index = ''
+        this.userpoint -= 2
+        db.collection('rooms')
+          .doc(this.$route.params.id).get()
+          .then((doc) => {
+            if (doc.exists) {
+              const data = []
+              let playerList = doc.data().players
+              playerList.forEach((element) => {
+                if (element.name == localStorage.getItem('username')) {
+                  element.score -= 2
+                }
+                data.push(element)
+              })
+              this.$store.dispatch('updateData', {
+                id: this.$route.params.id,
+                data
+              })
+            }
+          })
+      }
     },
-    components:{
-        img1,img2,img3,img4,img5,img6,img7,img8,img9,img10,imgwinner,imgwinner1,imgwinner2,imgwinner3,
-        gulai, 
-        meatball, 
-        papeda, 
-        kepiting, 
-        indomiegoreng, 
-        mozarella, 
-        perkedel, 
-        sopiga, 
-        sopayam, 
-        abonsapi, 
-        nasipadang, 
-        pecel,
-        one, two, three, four
-
+    setImage () {
+      if (this.userpoint === 0 || this.userpoint < 1) {
+        this.setImagePoint = this.image[0]
+      } else if (this.userpoint === 1) {
+        this.setImagePoint = this.image[1]
+      } else if (this.userpoint === 2) {
+        this.setImagePoint = this.image[2]
+      } else if (this.userpoint === 3) {
+        this.setImagePoint = this.image[3]
+      } else if (this.userpoint === 4) {
+        this.setImagePoint = this.image[4]
+      } else if (this.userpoint === 5) {
+        this.setImagePoint = this.image[5]
+      } else if (this.userpoint === 6) {
+        this.setImagePoint = this.image[6]
+      } else if (this.userpoint === 7) {
+        this.setImagePoint = this.image[7]
+      } else if (this.userpoint === 8) {
+        this.setImagePoint = this.image[8]
+      } else if (this.userpoint === 9) {
+        this.setImagePoint = this.image[9]
+      } else if (this.userpoint === 10) {
+        this.setImagePoint = this.image[10]
+      }
     },
-    methods:{
-        generateIndex(){
-            this.page = ''
-            if(this.userpoint < 10){
-                let random = Math.floor(Math.random()*15) 
-                this.savequestion = this.questions[random]
-                this.index = random
-                console.log(this.savequestion)
-                this.question = this.questionRandom(this.questions[random])
-                this.questionOut = this.question
-            }else{
-                this.question = 'Game Over'
-                return (function() {     // function expression closure to contain variables
-                    var i = 0;
-                    var pics = [ imgwinner,imgwinner1,imgwinner2,imgwinner3 ];
-                    var el = document.getElementById('img_to_flip');  // el doesn't change
-                    function toggle() {
-                        el.src = pics[i];           // set the image
-                        i = (i + 1) % pics.length;  // update the counter
-                    }
-                    setInterval(toggle, 500);
-                })();             // invoke the function expression
-            }
-        },
-        hint(){
-            this.page = 'hint'
-            console.log('masuk hint', this.savequestion.split(' ').join(''))
-            let hintWord = this.savequestion.split(' ').join('')
-            const indexes = this.imageHint[this.index]
-            if(indexes == '' || indexes == 'ILOVEYOU'){
-                return (function() {     // function expression closure to contain variables
-                    var i = 0;
-                    var pics = [ one, two, three, four ];
-                    var el = document.getElementById('img_hint');  // el doesn't change
-                    function toggle() {
-                        el.src = pics[i];           // set the image
-                        i = (i + 1) % pics.length;  // update the counter
-                    }
-                    setInterval(toggle, 500);
-                })(); 
-                // this.page = ''
-            }else{
-                this.setImageHint = this.imageHint[this.index]
-                // this.page = ''
-            }
-            
-        },
-        questionRandom(value){
-            let word= value.split('')
-            let randomWord= ''
-            for(let i = 0; i < word.length; i++){
-            let random = Math.floor(Math.random() * word.length)
-                randomWord += word[random]
-                word.splice(random, 1)
-                i -= 1
-            }
-            return randomWord
-        },
-        userAnswer(){
-            this.page = ''
-            if(this.answer === this.savequestion){
-                db.collection('rooms')
-                  .doc(this.$route.params.id).get()
-                  .then((doc) => {
-                        if (doc.exists) {
-                            const data = []
-                            this.userpoint++                        
-                            let playerList = doc.data().players
-                            playerList.forEach(element => {
-                                if(element.name == localStorage.getItem('username')){
-                                    this.setImage()                    
-                                    element.score += 1
-                                }
-                                data.push(element)
-                                });
-                            this.$store.dispatch('updateData',{
-                                id:this.$route.params.id,
-                                data
-                            })
-                        } 
-                        else {
-                            console.log("No such document!");
-                        }
-                    })
-                .catch(function(error) {
-                  console.log("Error getting document:", error);
-                });
+    getPoint () {
 
-                    this.generateIndex()
-                    this.setImage()
-                    this.answer = ''
-                    this.index = ''
-
-            }else{
-                console.log('ngga sama')
-                this.question='Your answer is wrong!'
-                this.generateIndex()
-                this.setImage()
-                this.index  = ''
-                this.userpoint -= 2
-                db.collection('rooms')
-                  .doc(this.$route.params.id).get()
-                  .then((doc) => {
-                    if(doc.exists){
-                      const data = []
-                      let playerList = doc.data().players
-                      playerList.forEach((element) => {
-                        if(element.name == localStorage.getItem('username')){
-                          element.score -= 2
-                        }
-                        data.push(element)
-                      }) 
-                        this.$store.dispatch('updateData',{
-                        id:this.$route.params.id,
-                        data
-                      })
-                    }
-                  })
-            }
-        },
-        setImage(){
-            if(this.userpoint === 0 || this.userpoint < 1){
-                this.setImagePoint = this.image[0]
-            }else if(this.userpoint === 1){
-                this.setImagePoint = this.image[1]
-            }else if(this.userpoint === 2){
-                this.setImagePoint = this.image[2]
-            }else if(this.userpoint === 3){
-                this.setImagePoint = this.image[3]
-            }else if(this.userpoint === 4){
-                this.setImagePoint = this.image[4]
-            }else if(this.userpoint === 5){
-                this.setImagePoint = this.image[5]
-            }else if(this.userpoint === 6){
-                this.setImagePoint = this.image[6]
-            }else if(this.userpoint === 7){
-                this.setImagePoint = this.image[7]
-            }else if(this.userpoint === 8){
-                this.setImagePoint = this.image[8]
-            }else if(this.userpoint === 9){
-                this.setImagePoint = this.image[9]
-            }else if(this.userpoint === 10){
-                this.setImagePoint = this.image[10]
-            }
-        },
-        getPoint(){
-
-        }
-    },
-    computed:{
-         ...mapState(['rooms'])
-    },
-    mounted(){
-    db.collection("rooms")
+    }
+  },
+  computed: {
+    ...mapState(['rooms'])
+  },
+  mounted () {
+    db.collection('rooms')
       .doc(this.$route.params.id)
       .onSnapshot(
         doc => {
@@ -333,19 +348,19 @@ export default {
           let playerList = doc.data().players
           console.log(this.roomData)
           playerList.forEach((element) => {
-              if(element.score >= 10){
-                let pemenang = element.name
-                Swal(`Game is Over, the winner is ${pemenang}`);
-                localStorage.clear()
-                this.$router.push('/')
-              }
+            if (element.score >= 10) {
+              let pemenang = element.name
+              Swal(`Game is Over, the winner is ${pemenang}`)
+              localStorage.clear()
+              this.$router.push('/')
+            }
           })
         },
         err => {
-          console.log(err);
+          console.log(err)
         }
-      );
-  } 
+      )
+  }
 }
 </script>
 
