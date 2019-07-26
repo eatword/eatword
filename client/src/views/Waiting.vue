@@ -13,44 +13,45 @@
 </template>
 
 <script>
+import db from '@/apis/firebase.js'
 export default {
-    data(){
-        return {
-            currentRoom: {},
-            user: localStorage.username
-        }
-    },
-    methods:{
-        start(){
-            db.collection('rooms')
-                .doc(this.$route.params.id).update({
-                    isReady: true,
-                })
-                .then(() => {
-                    console.log('start playing');
-                })
-                .catch((error) => {
-                    console.log('error start game')
-                    console.error(error);
-                });
-        }
-    }, 
-    created(){
-        db.collection("rooms")
-        .doc(this.$route.params.id)
-        .onSnapshot(
-            (doc) => {
-                this.currentRoom = doc.data()
-                if(this.currentRoom.isReady == true){
-                    console.log('masuk ke gamennya')
-                    this.$router.push(`/game/${this.$route.params.id}`)
-                }
-            },
-            (error) => {
-                console.log('error masuk ke game');
-                console.log(error)
-            });
+  data () {
+    return {
+      currentRoom: {},
+      user: localStorage.username
     }
+  },
+  methods: {
+    start () {
+      db.collection('rooms')
+        .doc(this.$route.params.id).update({
+          isReady: true
+        })
+        .then(() => {
+          console.log('start playing')
+        })
+        .catch((error) => {
+          console.log('error start game')
+          console.error(error)
+        })
+    }
+  },
+  created () {
+    db.collection('rooms')
+      .doc(this.$route.params.id)
+      .onSnapshot(
+        (doc) => {
+          this.currentRoom = doc.data()
+          if (this.currentRoom.isReady == true) {
+            console.log('masuk ke gamennya')
+            this.$router.push(`/game/${this.$route.params.id}`)
+          }
+        },
+        (error) => {
+          console.log('error masuk ke game')
+          console.log(error)
+        })
+  }
 
 }
 </script>
