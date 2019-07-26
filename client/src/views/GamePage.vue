@@ -3,8 +3,17 @@
         <div id="imagegame">
             <br>
             <!-- src="../assets/piring/1.png" -->
-            <img :src="setImagePoint" alt="FOOD" width="400" height="400" id="img_to_flip"><br>
+            <img v-if="page == ''" :src="setImagePoint" alt="FOOD" width="400" height="400" id="img_to_flip"><br>
+            <div v-if="page == 'hint'" class="container row">
+                <div class="col-sm-5">
+                    <img :src="setImagePoint" alt="FOOD" width="400" height="400" id="img_to_flip"><br>
+                </div>
+                <div class="col-sm-5">
+                     <img :src="setImageHint" alt="FOODHINT" width="400" height="400" id="img_hint"><br>
+                </div>
+            </div>
             <button @click="generateIndex" type="button" class="btn btn-primary">start</button>
+            <button @click="hint" type="button" class="btn btn-primary">hint</button>
             <h2>{{question}} </h2>
             <form @submit.prevent="userAnswer">
                 <div class="form-group">
@@ -32,27 +41,51 @@ import imgwinner1 from '../assets/piring2/3.png'
 import imgwinner2 from '../assets/piring2/4.png'
 import imgwinner3 from '../assets/piring2/5.png'
 
+// image hint
+import gulai from '../assets/animasi/34.png'
+import meatball from '../assets/animasi/37.png'
+import papeda from '../assets/animasi/35.png'
+import kepiting from '../assets/animasi/28.png'
+import indomiegoreng from '../assets/animasi/29.png'
+import mozarella from '../assets/animasi/30.png'
+import perkedel from '../assets/animasi/31.png'
+import sopiga from '../assets/animasi/32.png'
+import sopayam from '../assets/animasi/33.png'
+import abonsapi from '../assets/animasi/38.png'
+import nasipadang from '../assets/animasi/36.png'
+import pecel from '../assets/animasi/online.png'
+
+//no image
+import one from '../assets/noimage/21.png'
+import two from '../assets/noimage/22.png'
+import three from '../assets/noimage/23.png'
+import four from '../assets/noimage/24.png'
+
+
 
 export default {
     data(){
         return {
+            page: '',
             question: '',
             questionOut: '',
             answer: '',
-            index: [],
+            index: 0,
             savequestion: '',
-            userpoint: 8,
+            userpoint: 0,
             questions: [
                     'gulai',
                     'bakso',
                     'papeda',
                     'pecel',
-                    'sate kelinci', 
                     'perkedel',
                     'kepiting',
                     'chicken',
                     'meatball',
                     'noodle',
+                    'mozarella',
+                    'sop iga',
+                    'mie ayam',
                     'nasi padang',
                     'indomie goreng',
                     'sop ayam',
@@ -75,19 +108,55 @@ export default {
                 imgwinner3
             ],
             setImagePoint: '',
+            imageHint:[
+                gulai, 
+                meatball, 
+                papeda, 
+                pecel,
+                perkedel, 
+                kepiting, 
+                '',
+                meatball,
+                '',
+                mozarella, 
+                sopiga,
+                '', 
+                nasipadang,
+                indomiegoreng, 
+                sopayam, 
+                abonsapi, 
+                'ILOVEYOU'
+            ],
+            setImageHint: ''
         }
     },
     created(){
         this.setImage()
     },
     components:{
-        img1,img2,img3,img4,img5,img6,img7,img8,img9,img10,imgwinner,imgwinner1,imgwinner2,imgwinner3
+        img1,img2,img3,img4,img5,img6,img7,img8,img9,img10,imgwinner,imgwinner1,imgwinner2,imgwinner3,
+        gulai, 
+        meatball, 
+        papeda, 
+        kepiting, 
+        indomiegoreng, 
+        mozarella, 
+        perkedel, 
+        sopiga, 
+        sopayam, 
+        abonsapi, 
+        nasipadang, 
+        pecel,
+        one, two, three, four
+
     },
     methods:{
         generateIndex(){
+            this.page = ''
             if(this.userpoint < 10){
                 let random = Math.floor(Math.random()*15) 
                 this.savequestion = this.questions[random]
+                this.index = random
                 console.log(this.savequestion)
                 this.question = this.questionRandom(this.questions[random])
                 this.questionOut = this.question
@@ -105,6 +174,29 @@ export default {
                 })();             // invoke the function expression
             }
         },
+        hint(){
+            this.page = 'hint'
+            console.log('masuk hint', this.savequestion.split(' ').join(''))
+            let hintWord = this.savequestion.split(' ').join('')
+            const indexes = this.imageHint[this.index]
+            if(indexes == '' || indexes == 'ILOVEYOU'){
+                return (function() {     // function expression closure to contain variables
+                    var i = 0;
+                    var pics = [ one, two, three, four ];
+                    var el = document.getElementById('img_hint');  // el doesn't change
+                    function toggle() {
+                        el.src = pics[i];           // set the image
+                        i = (i + 1) % pics.length;  // update the counter
+                    }
+                    setInterval(toggle, 500);
+                })(); 
+                // this.page = ''
+            }else{
+                this.setImageHint = this.imageHint[this.index]
+                // this.page = ''
+            }
+            
+        },
         questionRandom(value){
             let word= value.split('')
             let randomWord= ''
@@ -117,17 +209,20 @@ export default {
             return randomWord
         },
         userAnswer(){
+            this.page = ''
             if(this.answer === this.savequestion){
                 console.log('yeay sama')
                 this.userpoint++
                 this.setImage()
                 this.answer = ''
+                this.index = ''
                 this.generateIndex()
             }else{
                 console.log('ngga sama')
                 this.userpoint--
                 this.setImage()
                 this.answer = ''
+                this.index  = ''
                 this.generateIndex()
             }
         },
