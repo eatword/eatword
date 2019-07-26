@@ -5,7 +5,6 @@ import Lobby from './views/Lobby.vue'
 import Waiting from './views/Waiting.vue'
 import GamePage from './views/GamePage.vue'
 
-
 Vue.use(Router)
 
 export default new Router({

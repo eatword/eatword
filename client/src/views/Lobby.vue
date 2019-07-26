@@ -91,7 +91,7 @@ export default {
     },
     joinRoom (id) {
       this.$store.dispatch('joinRoom', id)
-    },
+    }
 
   }
 }
