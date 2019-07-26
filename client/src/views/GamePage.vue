@@ -20,7 +20,23 @@
                     <input v-model="answer" type="text" class="form-control" id="answerPlayer" aria-describedby="answerPlayer" placeholder="Your Answer . . .">
                 </div>
             </form>
-            <h4>{{userpoint}}</h4>
+            <div class="row" style="text-align:center;font-size: 80px; font-family: 'Orbitron', sans-serif; color: red">
+                <div class="col">
+                    <p>{{roomData.players[0].score}}</p>
+                </div>
+                <div class="col">
+                    <p>{{roomData.players[1].score}}</p>
+                </div>
+                <div class="col">
+                    <p>{{roomData.players[2].score}}</p>
+                </div>
+                <div class="col">
+                    <p></p>
+                </div>
+                <div class="col">
+                    <p></p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -61,11 +77,15 @@ import two from '../assets/noimage/22.png'
 import three from '../assets/noimage/23.png'
 import four from '../assets/noimage/24.png'
 
+//db
+import db from '../apis/firebase.js';
+import { mapState, mapMutations, mapActions } from 'vuex';
 
 
 export default {
     data(){
         return {
+            roomData: {},
             page: '',
             question: '',
             questionOut: '',
@@ -211,19 +231,68 @@ export default {
         userAnswer(){
             this.page = ''
             if(this.answer === this.savequestion){
-                console.log('yeay sama')
-                this.userpoint++
-                this.setImage()
+                db.collection('rooms')
+                  .doc(this.$route.params.id).get()
+                  .then((doc) => {
+                        if (doc.exists) {
+                            const data = []
+                            this.userpoint++                        
+                            let playerList = doc.data().players
+                            playerList.forEach(element => {
+                                if(element.name == localStorage.getItem('username')){
+                                    this.setImage()                    
+                                    element.score += 1
+                                }
+                                data.push(element)
+                                });
+                            this.$store.dispatch('updateData',{
+                                id:this.$route.params.id,
+                                data
+                            })
+                        } 
+                        else {
+                            console.log("No such document!");
+                        }
+                    })
+                .catch(function(error) {
+                  console.log("Error getting document:", error);
+                });
                 this.answer = ''
-                this.index = ''
-                this.generateIndex()
+                if(this.player.score >= 10){
+                    this.question= 'win !!!'
+                }
+                else{
+                    this.setImage()
+                    this.answer = ''
+                    this.index = ''
+                    this.generateIndex()
+                }
+                console.log('yeay sama')
             }else{
                 console.log('ngga sama')
-                this.userpoint--
                 this.setImage()
-                this.answer = ''
                 this.index  = ''
                 this.generateIndex()
+                this.question='Your answer is wrong!'
+                this.userpoint -= 2
+                db.collection('rooms')
+                  .doc(this.$route.params.id).get()
+                  .then((doc) => {
+                    if(doc.exists){
+                      const data = []
+                      let playerList = doc.data().players
+                      playerList.forEach((element) => {
+                        if(element.name == localStorage.getItem('username')){
+                          element.score -= 2
+                        }
+                        data.push(element)
+                      }) 
+                      this.$store.dispatch('updateData',{
+                      id:this.$route.params.id,
+                      data
+                      })
+                    }
+                  })
             }
         },
         setImage(){
@@ -255,6 +324,31 @@ export default {
 
         }
     },
+    computed:{
+         ...mapState(['rooms'])
+    },
+    mounted(){
+    db.collection("rooms")
+      .doc(this.$route.params.id)
+      .onSnapshot(
+        doc => {
+          this.roomData = doc.data()
+          let playerList = doc.data().players
+          console.log(playerList)
+          playerList.forEach((element) => {
+              if(element.score >= 100){
+                let pemenang = element.name
+                this.$swal(`Game is Over, the winner is ${pemenang}`);
+                localStorage.clear()
+                this.$router.push('/')
+              }
+          })
+        },
+        err => {
+          console.log(err);
+        }
+      );
+  }
 
 }
 </script>
