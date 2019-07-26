@@ -2,6 +2,10 @@
   <div id="app">
     <router-view/>
   </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> fixedLobby
 </template>
 
 <style>

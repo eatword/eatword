@@ -15,17 +15,16 @@
 
 <script>
 
-
 export default {
   name: 'home',
-  data(){
+  data () {
     return {
-      username:''
+      username: ''
     }
   },
-  methods:{
-    login(){
-      localStorage.setItem('username',this.username)
+  methods: {
+    login () {
+      localStorage.setItem('username', this.username)
       this.$store.commit('SetPlayer', this.username)
       this.$store.dispatch('getAllRooms')
       this.username = ''
@@ -33,7 +32,7 @@ export default {
     }
   },
   components: {
-    
+
   }
 }
 </script>
@@ -52,4 +51,3 @@ export default {
     margin-left: 5%
   }
 </style>
-

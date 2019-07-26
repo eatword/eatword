@@ -58,6 +58,7 @@ import imgwinner1 from '../assets/piring2/3.png'
 import imgwinner2 from '../assets/piring2/4.png'
 import imgwinner3 from '../assets/piring2/5.png'
 
+<<<<<<< HEAD
 // image hint
 import gulai from '../assets/animasi/34.png'
 import meatball from '../assets/animasi/37.png'
@@ -153,8 +154,107 @@ export default {
     },
     created(){
         this.generateIndex()
-        this.setImage()
+=======
+export default {
+  data () {
+    return {
+      question: '',
+      questionOut: '',
+      answer: '',
+      index: [],
+      savequestion: '',
+      userpoint: 8,
+      questions: [
+        'gulai',
+        'bakso',
+        'papeda',
+        'pecel',
+        'sate kelinci',
+        'perkedel',
+        'kepiting',
+        'chicken',
+        'meatball',
+        'noodle',
+        'nasi padang',
+        'indomie goreng',
+        'sop ayam',
+        'abon sapi',
+        'aku sayang kamu'],
+      image: [
+        img1,
+        img2,
+        img3,
+        img4,
+        img5,
+        img6,
+        img7,
+        img8,
+        img9,
+        img10,
+        imgwinner,
+        imgwinner1,
+        imgwinner2,
+        imgwinner3
+      ],
+      setImagePoint: ''
+    }
+  },
+  created () {
+    this.setImage()
+  },
+  components: {
+    img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, imgwinner, imgwinner1, imgwinner2, imgwinner3
+  },
+  methods: {
+    generateIndex () {
+      if (this.userpoint < 10) {
+        let random = Math.floor(Math.random() * 15)
+        this.savequestion = this.questions[random]
+        console.log(this.savequestion)
+        this.question = this.questionRandom(this.questions[random])
+        this.questionOut = this.question
+      } else {
+        this.question = 'Game Over'
+        return (function () { // function expression closure to contain variables
+          var i = 0
+          var pics = [ imgwinner, imgwinner1, imgwinner2, imgwinner3 ]
+          var el = document.getElementById('img_to_flip') // el doesn't change
+          function toggle () {
+            el.src = pics[i] // set the image
+            i = (i + 1) % pics.length // update the counter
+          }
+          setInterval(toggle, 500)
+        })() // invoke the function expression
+      }
     },
+    questionRandom (value) {
+      let word = value.split('')
+      let randomWord = ''
+      for (let i = 0; i < word.length; i++) {
+        let random = Math.floor(Math.random() * word.length)
+        randomWord += word[random]
+        word.splice(random, 1)
+        i -= 1
+      }
+      return randomWord
+    },
+    userAnswer () {
+      if (this.answer === this.savequestion) {
+        console.log('yeay sama')
+        this.userpoint++
+>>>>>>> fixedLobby
+        this.setImage()
+        this.answer = ''
+        this.generateIndex()
+      } else {
+        console.log('ngga sama')
+        this.userpoint--
+        this.setImage()
+        this.answer = ''
+        this.generateIndex()
+      }
+    },
+<<<<<<< HEAD
     components:{
         img1,img2,img3,img4,img5,img6,img7,img8,img9,img10,imgwinner,imgwinner1,imgwinner2,imgwinner3,
         gulai, 
@@ -345,6 +445,36 @@ export default {
           console.log(err);
         }
       );
+=======
+    setImage () {
+      if (this.userpoint === 0 || this.userpoint < 1) {
+        this.setImagePoint = this.image[0]
+      } else if (this.userpoint === 1) {
+        this.setImagePoint = this.image[1]
+      } else if (this.userpoint === 2) {
+        this.setImagePoint = this.image[2]
+      } else if (this.userpoint === 3) {
+        this.setImagePoint = this.image[3]
+      } else if (this.userpoint === 4) {
+        this.setImagePoint = this.image[4]
+      } else if (this.userpoint === 5) {
+        this.setImagePoint = this.image[5]
+      } else if (this.userpoint === 6) {
+        this.setImagePoint = this.image[6]
+      } else if (this.userpoint === 7) {
+        this.setImagePoint = this.image[7]
+      } else if (this.userpoint === 8) {
+        this.setImagePoint = this.image[8]
+      } else if (this.userpoint === 9) {
+        this.setImagePoint = this.image[9]
+      } else if (this.userpoint === 10) {
+        this.setImagePoint = this.image[10]
+      }
+    },
+    getPoint () {
+
+    }
+>>>>>>> fixedLobby
   }
 
 }

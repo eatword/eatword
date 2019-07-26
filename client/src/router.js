@@ -23,9 +23,9 @@ export default new Router({
       component: Lobby
     },
     {
-      path: "/waiting/:id",
-      name: "waiting",
-      component: Waiting,
+      path: '/waiting/:id',
+      name: 'waiting',
+      component: Waiting
     },
     {
       path: '/game/:id',

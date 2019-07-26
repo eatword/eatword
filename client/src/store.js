@@ -7,40 +7,42 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    currentPlayer:'',
-    rooms:[]
+    currentPlayer: '',
+    rooms: []
   },
   mutations: {
-    SetPlayer(state, username){
-      state.currentPlayer= username
+    SetPlayer (state, username) {
+      state.currentPlayer = username
     },
-    setRooms(state, rooms){
-      state.rooms= rooms
+    setRooms (state, rooms) {
+      state.rooms = rooms
     }
   },
   actions: {
-    createRoom(context, payload){
-        db.collection('rooms')
-          .add({
-            name: payload,
-            players: [{ name: localStorage.username, score: 0 }],
-            winner: '',
-            createdAt: new Date(),
-            isReady: false
-          })
-          .then((docs) => {
-            console.log(docs)
-            console.log(docs._key.path.segments[1])
-            localStorage.setItem('idRoom', docs._key.path.segments[1])
-            router.push(`/waiting/${docs._key.path.segments[1]}`)
-            context.dispatch('getAllRooms')
-          })
-          .catch((err) => {
-            console.log(err)
+    createRoom (context, payload) {
+      db.collection('rooms')
+        .add({
+          name: payload,
+          players: [{ name: localStorage.username, score: 0 }],
+          winner: '',
+          createdAt: new Date(),
+          isReady: false
+        })
+        .then((docs) => {
+          console.log(docs)
+          console.log(docs.data())
+          // console.log(docs.id);
+          console.log(docs._key.path.segments[1], 'halooooo')
+          localStorage.setItem('idRoom', docs._key.path.segments[1])
+          router.push(`/waiting/${docs._key.path.segments[1]}`)
+          context.dispatch('getAllRooms')
+        })
+        .catch((err) => {
+          console.log(err)
         })
     },
-    
-    getAllRooms(context){
+
+    getAllRooms (context) {
       db.collection('rooms')
         .orderBy('createdAt')
         .onSnapshot((docs) => {
@@ -50,15 +52,15 @@ export default new Vuex.Store({
             let info = el.data()
             info.id = el.id
             rooms.push(info)
-          });
+          })
           context.commit('setRooms', rooms)
         }, (error) => {
           console.log('error get all rooms')
           console.log(error)
-      })
+        })
     },
 
-    joinRoom(context, roomId){
+    joinRoom (context, roomId) {
       let newPlayers = []
       let room = context.state.rooms.find(room => room.id === roomId)
       newPlayers = room.players
@@ -68,34 +70,33 @@ export default new Vuex.Store({
         db.collection('rooms')
           .doc(roomId)
           .update({
-            players: newPlayers,
+            players: newPlayers
           })
           .then(() => {
             context.dispatch('getAllRooms')
-            console.log(roomId,'ini room')
+            console.log(roomId, 'ini room')
             router.push(`/waiting/${roomId}`)
           })
           .catch((err) => {
             console.log(err)
           })
-        } else {
-          alert('Maaf Room Ini Sudah Penuh');
-        } 
+      } else {
+        alert('Maaf Room Ini Sudah Penuh')
+      }
     },
 
-    updateData(context,payload){
+    updateData (context, payload) {
       db.collection('rooms')
         .doc(payload.id).update({
-          players: payload.data,
+          players: payload.data
         })
         .then(() => {
-          
           context.dispatch('getAllRoom')
         })
         .catch((error) => {
           console.log('error update data')
-          console.error(error);
-        });
-    }
+          console.error(error)
+        })
+    },
   }
 })
