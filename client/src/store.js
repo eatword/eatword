@@ -83,7 +83,12 @@ export default new Vuex.Store({
             console.log(err)
           })
       } else {
-        alert('Maaf Room Ini Sudah Penuh')
+        Swal.fire({
+          type: 'error',
+          text: 'Room is full',
+          showConfirmButton: false,
+          timer: 1000
+        })
       }
     },
 
@@ -100,13 +105,13 @@ export default new Vuex.Store({
           console.error(error)
         })
     },
-    leaveRoom(context,payload) {
+    leaveRoom (context, payload) {
       console.log(context.state.currentPlayer)
-      console.log(localStorage.getItem('username'));
+      console.log(localStorage.getItem('username'))
       db.collection('rooms')
         .doc(payload)
         .update({
-          ['players']: ['players'].filter(player => player.name !== localStorage.getItem('username'))
+          'players': ['players'].filter(player => player.name !== localStorage.getItem('username'))
         })
         .then(() => {
           router.push('/lobby')

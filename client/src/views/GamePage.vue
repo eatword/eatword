@@ -13,38 +13,45 @@
                      <img :src="setImageHint" alt="FOODHINT" width="400" height="400" id="img_hint"><br>
                 </div>
             </div>
-            <button @click="generateIndex" type="button" class="btn btn-primary">SKIP</button>
-            <button @click="hint" type="button" class="btn btn-primary">hint</button>
-            <h2>{{question}} |  <b>{{answerWrong}}</b></h2>
-            <form @submit.prevent="userAnswer">
-                <div class="form-group">
-                    <input v-model="answer" type="text" class="form-control" id="answerPlayer" aria-describedby="answerPlayer" placeholder="Your Answer . . .">
+            <div class="container answerScore" style="margin-right: 10%;">
+                <div class="row">
+                    <div class="col-sm-6 offset-2">
+                        <button @click="generateIndex" type="button" class="btn btn-primary">SKIP</button>
+                        <h2>{{question}} |  <b>{{answerWrong}}</b></h2><br>
+                        <form @submit.prevent="userAnswer">
+                            <div class="form-group">
+                                <input v-model="answer" type="text" class="form-control" id="answerPlayer" style="width: 500px;" aria-describedby="answerPlayer" placeholder="Your Answer . . .">
+                            </div>
+                        </form>
+                    </div>
                 </div>
-            </form>
-            <div class="row" style="text-align:center;font-size: 80px; color: white;">
-                <div class="col">
-                    <h5>{{roomData.players[0].name}}</h5>
-                    <p>{{roomData.players[0].score}}</p>
-                </div>
-                <div class="col">
-                    <h5>{{roomData.players[1].name}}</h5>
-                    <p>{{roomData.players[1].score}}</p>
-                </div>
-                <div class="col">
-                    <h5>{{roomData.players[2].name}}</h5>
-                    <p>{{roomData.players[2].score}}</p>
-                </div>
-                <div class="col">
-                    <p></p>
-                </div>
-                <div class="col">
-                    <p></p>
+                <div class="row" style="text-align:center;font-size: 80px; color: white;">
+                    <div class="col">
+                        <h5>{{roomData.players[0].name}}</h5>
+                        <p>{{roomData.players[0].score}}</p>
+                    </div>
+                    <div class="col">
+                        <h5>{{roomData.players[1].name}}</h5>
+                        <p>{{roomData.players[1].score}}</p>
+                    </div>
+                    <div class="col">
+                        <h5>{{roomData.players[2].name}}</h5>
+                        <p>{{roomData.players[2].score}}</p>
+                    </div>
+                    <div class="col">
+                        <p></p>
+                    </div>
+                    <div class="col">
+                        <p></p>
+                    </div>
                 </div>
             </div>
+            <audio controls autoplay loop hidden>
+                <source src="https://storage.cloud.google.com/hacktiv-image/Lil%20Dicky%20-%20Earth%20(Lyrics).mp3" type="audio/mpeg">
+            </audio>
         </div>
     </div>
 </template>
-
 <script>
 import img1 from '../assets/piring/1.png'
 import img2 from '../assets/piring/15.png'
@@ -60,7 +67,6 @@ import imgwinner from '../assets/piring2/2.png'
 import imgwinner1 from '../assets/piring2/3.png'
 import imgwinner2 from '../assets/piring2/4.png'
 import imgwinner3 from '../assets/piring2/5.png'
-
 // image hint
 import gulai from '../assets/animasi/34.png'
 import meatball from '../assets/animasi/37.png'
@@ -74,18 +80,14 @@ import sopayam from '../assets/animasi/33.png'
 import abonsapi from '../assets/animasi/38.png'
 import nasipadang from '../assets/animasi/36.png'
 import pecel from '../assets/animasi/online.png'
-
 //no image
 import one from '../assets/noimage/21.png'
 import two from '../assets/noimage/22.png'
 import three from '../assets/noimage/23.png'
 import four from '../assets/noimage/24.png'
-
 //db
 import db from '../apis/firebase.js';
 import { mapState, mapMutations, mapActions } from 'vuex';
-
-
 export default {
     data(){
         return {
@@ -132,7 +134,7 @@ export default {
                     'indomie goreng',
                     'sop ayam',
                     'abon sapi',
-                    'aku sayang kamu'],
+                    'fried chicken'],
             setImagePoint: '',
             imageHint:[
                 gulai, 
@@ -175,7 +177,6 @@ export default {
         nasipadang, 
         pecel,
         one, two, three, four
-
     },
     methods:{
         generateIndex(){
@@ -266,7 +267,6 @@ export default {
                 .catch(function(error) {
                   console.log("Error getting document:", error);
                 });
-
             }else{
                 console.log('ngga sama')
                 this.answerWrong = 'Your answer is wrong!'
@@ -384,9 +384,32 @@ export default {
           playerList.forEach((element) => {
               if(element.score >= 10){
                 let pemenang = element.name
-                Swal.fire('Game Over !!', `The Winner is ${pemenang}`);
-                localStorage.clear()
-                this.$router.push('/')
+                //  return (function() {     // function expression closure to contain variables
+                //     var i = 0;
+                //     var img = [ imgwinner,imgwinner1,imgwinner2,imgwinner3 ];
+                //     var el = document.getElementById('img_to_flip');  // el doesn't change
+                //     function toggle() {
+                //         el.src = [i];           // set the image
+                //         i = (i + 1) % img.length;  // update the counter
+                //     }
+                //     setInterval(toggle, 250);
+                // })();  
+                Swal.fire({
+                        title: 'Game Over !!',
+                        text: `The Winner is ${pemenang}`,
+                        type: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'OK !'
+                        }).then((result) => {
+                            if (result.value) {
+                                localStorage.clear()
+                                this.$router.push('/')
+                            }
+                        })
+                // localStorage.clear()
+                // this.$router.push('/')
               }
           })
         },
@@ -395,11 +418,8 @@ export default {
         }
       );
   }
-
-
 }
 </script>
-
 <style>
     body{
         background-image: url('../assets/eatword.png');
@@ -410,5 +430,10 @@ export default {
     }
     h2, h4{
         color: aliceblue;
+    }
+    .answerScore {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
     }
 </style>
